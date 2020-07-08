@@ -6,6 +6,10 @@
 
 module.exports = {
   /* Your site config here */
+  siteMetadata: {
+    title: 'Gatsby Jinyus'
+  },
+  
   plugins: [
     'gatsby-plugin-sass'
   ],
