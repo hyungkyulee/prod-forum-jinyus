@@ -3,10 +3,10 @@ import { Link } from 'gatsby'
 import Layout from '../components/layout'
 import Title from '../components/title'
 
-export default ({data}) => {
+export default () => {
   return (
     <Layout>
-      <Title text="Welcome to Jinyus" subtitle={data.site.siteMetadata.title} />
+      <Title text="Welcome to Jinyus" />
       <div>
         <Link to="/">Home</Link> | <Link to="/about">About Jinyus</Link>
       </div>
@@ -16,11 +16,3 @@ export default ({data}) => {
     </Layout>
   );
 }
-
-export const query = graphql `query {
-  site {
-    siteMetadata {
-      title
-    }
-  }
-}`

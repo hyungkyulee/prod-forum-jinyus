@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'gatsby'
+import { Link, StaticQuery,  } from 'gatsby'
 import styles from './header.module.scss'
 
 // HeaderLink component
@@ -43,10 +43,22 @@ const SocialButton = (props) => {
 
 export default () => (
 
-   <header className={styles.container}>
+  <StaticQuery
+    query = {graphql `
+      query {
+        site {
+          siteMetadata {
+            title
+          }
+        }
+      }`
+    }
+
+    render = { data => (
+      <header className={styles.container}>
 
         <div className={styles.row}>
-          <HomeButton to='/' text='My Gatsby blog' />
+          <HomeButton to='/' text={data.site.siteMetadata.title} />
           <SocialButton site="github" username="hyungkyulee"></SocialButton>
           <SocialButton site="linkedin" username="hyungkyulee"></SocialButton>
           <SocialButton site="twitter" username="HyungkyuLee5"></SocialButton>
@@ -57,6 +69,8 @@ export default () => (
           <HeaderLink to='/about' text='ABOUT'/>
         </div>
         
-   </header>
+      </header>
+    )}
+   />
 
 )
