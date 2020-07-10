@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from 'gatsby'
 import Layout from '../components/layout'
 import Title from '../components/title'
+import ArticleList from '../components/article-list'
 
 export default () => {
   return (
@@ -13,6 +14,9 @@ export default () => {
       <p>
         Jiny and Us to go to make a better world. Think, Act, and Innovate.
       </p>
+
+      <ArticleList />
+       
     </Layout>
   );
 }
