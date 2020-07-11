@@ -137,6 +137,192 @@ $ gatsby serve
 AWS Amplify console -> Deploy ->
 
 ### Setup API of AWS with Gatsby
+(souce : https://aws.amazon.com/blogs/startups/building-your-app-from-idea-to-mvp-part-2/)
 
+```
 $ npm install -g @aws-amplify/cli
+```
+
+Create a new IAM user and set the new credential
+(* if you're going to use the existing credential, you don't need to do this step.)
+```
 $ amplify configure
+Follow these steps to set up access to your AWS account:
+
+Sign in to your AWS administrator account:
+https://console.aws.amazon.com/
+Press Enter to continue
+
+Specify the AWS Region
+? region:  eu-west-1
+Specify the username of the new IAM user:
+? user name:  jinyus
+Complete the user creation using the AWS console
+https://console.aws.amazon.com/iam/home?region=undefined#/users$new?step=final&accessKey&userNames=jinyus&permissionType=policies&policies=arn:aws:iam::aws:policy%2FAdministratorAccess
+Press Enter to continue
+
+Enter the access key of the newly created user:
+? accessKeyId:  ********************
+? secretAccessKey:  ****************************************
+This would update/create the AWS Profile in your local machine
+? Profile Name:  dintentdev
+```
+
+Create a new amplify project
+(* When you run this command line, you have to login the same user as the credential of aws configure file)
+```
+$ amplify init
+Note: It is recommended to run this command from the root of your app directory
+? Enter a name for the project jinyus
+? Enter a name for the environment prod
+? Choose your default editor: Visual Studio Code
+? Choose the type of app that you're building javascript
+Please tell us about your project
+? What javascript framework are you using react
+? Source Directory Path:  src
+? Distribution Directory Path: public
+? Build Command:  gatsby build
+? Start Command: npm run start
+Using default provider  awscloudformation
+
+For more information on AWS Profiles, see:
+https://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html
+
+? Do you want to use an AWS profile? Yes
+? Please choose the profile you want to use dintentdev
+Adding backend environment prod to AWS Amplify Console app: d4pkwulpm4bce
+⠧ Initializing project in the cloud...
+
+:
+
+$ amplify env list
+
+| Environments |
+| ------------ |
+| *prod        |
+
+```
+When prompted for an AWS profile, choose the profile you created in the configuration step.
+
+Now that we have the base project set up, let’s also go ahead and install the AWS Amplify client library:
+```
+$ npm i aws-amplify
+```
+
+#### Authentication
+complete the authentication setup for this app will need to accomplish the following things:
+Enable users to sign up and sign in
+```
+$ amplify add auth
+Using service: Cognito, provided by: awscloudformation
+ 
+ The current configured provider is Amazon Cognito. 
+ 
+ Do you want to use the default authentication and security configuration? Defau
+lt configuration
+ Warning: you will not be able to edit these selections. 
+ How do you want users to be able to sign in? Username
+ Do you want to configure advanced settings? Yes, I want to make some additional
+ changes.
+ Warning: you will not be able to edit these selections. 
+ What attributes are required for signing up? Email
+ Do you want to enable any of the following capabilities? 
+Successfully added resource jinyus3a9d20ff locally
+
+$ amplify update auth
+Please note that certain attributes may not be overwritten if you choose to use defaults settings.
+
+You have configured resources that might depend on this Cognito resource.  Updating this Cognito resource could have unintended side effects.
+
+Using service: Cognito, provided by: awscloudformation
+ What do you want to do? Create or update Cognito user pool groups
+? Provide a name for your user pool group: Admin
+? Do you want to add another User Pool Group No
+✔ Sort the user pool groups in order of preference · Admin
+Successfully updated resource jinyus3a9d20ff locally
+```
+
+#### Storage
+create the image storage service using Amazon S3:
+```
+$ amplify add storage
+? Please select from one of the below mentioned services: Content (Images, audio
+, video, etc.)
+? Please provide a friendly name for your resource that will be used to label th
+is category in the project: jinyus
+? Please provide bucket name: s3jinyus
+? Who should have access: Auth and guest users
+? What kind of access do you want for Authenticated users? create/update, read, 
+delete
+? What kind of access do you want for Guest users? read
+? Do you want to add a Lambda Trigger for your S3 Bucket? No
+```
+
+#### API/Database
+we need to create is an API and a database to store our data. This API needs to allow both authenticated and unauthenticated access.
+Authenticated Admin users should be able to create and update items in the database while unauthenticated access will allow us to query the API at build time to fetch the data needed for the application.
+To allow this, we’ll create an AWS AppSync GraphQL API & Amazon DynamoDB NoSQL database using the CLI:
+```
+$ amplify add api
+? Please select from one of the below mentioned services: GraphQL
+? Provide API name: jinyusapi
+? Choose the default authorization type for the API Amazon Cognito User Pool
+Use a Cognito user pool configured as a part of this project.
+? Do you want to configure advanced settings for the GraphQL API Yes, I want to 
+make some additional changes.
+? Configure additional auth types? Yes
+? Choose the additional authorization types you want to configure for the API AP
+I key
+API key configuration
+? Enter a description for the API key: gatsby
+? After how many days from now the API key should expire (1-365): 100
+? Configure conflict detection? No
+? Do you have an annotated GraphQL schema? No
+? Do you want a guided schema creation? Yes
+? What best describes your project: One-to-many relationship (e.g., “Blogs” with
+ “Posts” and “Comments”)
+? Do you want to edit the schema now? Yes
+Please edit the file in your editor: /Users/albert/_proj/jinyus/prod-forum-jinyus/amplify/backend/api/jinyusapi/schema.graphql
+? Press enter to continue 
+
+The following types do not have '@auth' enabled. Consider using @auth with @model
+	 - Blog
+	 - Post
+	 - Comment
+Learn more about @auth here: https://docs.amplify.aws/cli/graphql-transformer/directives#auth
+GraphQL schema compiled successfully.
+```
+
+#### Deploy to AWS
+```
+$ amplify push --y
+✔ Successfully pulled backend environment prod from the cloud.
+
+Current Environment: prod
+
+| Category | Resource name                     | Operation | Provider plugin   |
+| -------- | --------------------------------- | --------- | ----------------- |
+| Function | jinyus4f3f9efcDefineAuthChallenge | Create    | awscloudformation |
+| Auth     | jinyus3a9d20ff                    | Create    | awscloudformation |
+| Auth     | userPoolGroups                    | Create    | awscloudformation |
+| Storage  | jinyus                            | Create    | awscloudformation |
+| Api      | jinyusapi                         | Create    | awscloudformation |
+
+The following types do not have '@auth' enabled. Consider using @auth with @model
+	 - Blog
+	 - Post
+	 - Comment
+Learn more about @auth here: https://docs.amplify.aws/cli/graphql-transformer/directives#auth
+GraphQL schema compiled successfully.
+
+Edit your schema at /Users/albert/_proj/jinyus/prod-forum-jinyus/amplify/backend/api/jinyusapi/schema.graphql or place .graphql files in a directory at /Users/albert/_proj/jinyus/prod-forum-jinyus/amplify/backend/api/jinyusapi/schema
+⠴ Updating resources in the cloud. This may take a few minutes...
+:
+:
+:
+✔ Generated GraphQL operations successfully and saved at src/graphql
+✔ All resources are updated in the cloud
+
+GraphQL endpoint: https://jt5yic4tgbbode5z7bd3i274jm.appsync-api.eu-west-1.amazonaws.com/graphql
+GraphQL API KEY: da2-k7puqsa6nvfhrguabo25oedx7e
+```
