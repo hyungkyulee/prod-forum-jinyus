@@ -132,3 +132,11 @@ Optimisation
 ```
 $ gatsby serve
 ```
+
+### Deploy Gatsby in AWS
+AWS Amplify console -> Deploy ->
+
+### Setup API of AWS with Gatsby
+
+$ npm install -g @aws-amplify/cli
+$ amplify configure
