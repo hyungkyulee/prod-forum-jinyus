@@ -1,0 +1,11 @@
+{
+    "AppSyncApiName": "jinyusapi",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": "false",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authjinyus3a9d20ff",
+            "Outputs.UserPoolId"
+        ]
+    }
+}
