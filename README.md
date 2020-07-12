@@ -3,7 +3,7 @@ Jiny and Us to go to make a better world - Forum
 
 ## Dev Environment
 
-### GasbyJS
+### Gasby Init
 ```
 $ npm i --g gatsby-cli
 $ gatsby --help
@@ -58,7 +58,7 @@ An example GraphQL query might look like:
 Run the graphql in the browser with the build url : http://localhost:8000/___graphql
 
 
-### Install Gatsby Plugins
+### Gatsby Plugins
 
 1) SASS package installation
 ```
@@ -117,8 +117,35 @@ plugins: [
     'gatsby-transformer-remark'
   ],
 ```
-
 the combination of the two plugins: 'source-filesystem' and 'transformer-remark', can access markdwon file information
+
+4) React Helmet
+Provides drop-in support for server rendering data added with React Helmet.
+React Helmet is a component which lets you control your document head using their React component.
+With this plugin, attributes you add in their component, e.g. title, meta attributes, etc. will get added to the static HTML pages Gatsby builds.
+
+This is important not just for site viewers, but also for SEO — title and description metadata stored in the document head is a key component used by Google in determining placement in search results.
+```
+npm install --save gatsby-plugin-react-helmet react-helmet
+npm install gatsby-source-graphql
+```
+
+at gatsby-config.js
+```
+ plugins: [
+  `gatsby-plugin-react-helmet`,
+  {
+   resolve: `gatsby-source-graphql`,
+   options: { 
+        typeName: `gatsbyappsync`,
+        fieldName: `gatsbyappsync`,
+        url: `https://randomvalue.appsync-api.us-east-1.amazonaws.com/graphql`,
+        headers: {
+            'x-api-key': 'randomkey'
+        }
+   },
+  },
+```
 
 ### Deploy Gatsby
 
@@ -325,4 +352,105 @@ Edit your schema at /Users/albert/_proj/jinyus/prod-forum-jinyus/amplify/backend
 
 GraphQL endpoint: https://jt5yic4tgbbode5z7bd3i274jm.appsync-api.eu-west-1.amazonaws.com/graphql
 GraphQL API KEY: da2-k7puqsa6nvfhrguabo25oedx7e
+```
+
+### Bootstrap4 and React-bootstrap in Gatsby
+source : https://react-bootstrap.github.io/components
+
+Install the packages
+```
+npm i react-bootstrap bootstrap --save
+```
+
+at gatsby-browser.js
+```
+import "./node_modules/bootstrap/dist/css/bootstrap.css'
+```
+
+Example of Header.js with 'Navbar' of 'react-bootstrap'
+```
+import React from 'react'
+import {Navbar, Nav, NavDropdown, Form, FormControl, Button} from 'react-bootstrap'
+
+export default () => (
+
+  <Navbar bg="light" expand="lg">
+    <Navbar.Brand href="#home">Jinyus</Navbar.Brand>
+    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar.Collapse id="basic-navbar-nav">
+      <Nav className="mr-auto">
+        <Nav.Link href="/">Home</Nav.Link>
+        <Nav.Link href="/about">About</Nav.Link>
+        <NavDropdown title="Articles" id="basic-nav-dropdown">
+          <NavDropdown.Item href="#action/3.1">Action with doers</NavDropdown.Item>
+          <NavDropdown.Item href="#action/3.2">Story Together</NavDropdown.Item>
+          <NavDropdown.Item href="#action/3.3">News around us</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item href="#action/3.4">What about you</NavDropdown.Item>
+        </NavDropdown>
+        <Nav.Link href="/admin">Signin</Nav.Link>
+      </Nav>
+      <Form inline>
+        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+        <Button variant="outline-success">Search</Button>
+      </Form>
+    </Navbar.Collapse>
+  </Navbar>
+
+)
+```
+
+
+### AWS Appsync
+
+Services -> AWS AppSync -> Queries -> login with :
+Amazon Cognito User Pool : eu-west-1_SKV***44G
+Client Id : 5qmokbh**********7po97dcljd 
+( * client id can be refered at aws-exports.js)
+
+Creat 1 Blog, 1 Post, 1 Comments
+
+```
+mutation CreateBlog {
+  createBlog(input:
+  {
+    id: "3b51348c-9e21-42ad-b186-6cd157c4b3d1",
+    name: "action with doers"
+  })
+  {
+    id
+    name
+  }
+}
+```
+
+```
+mutation CreatePost {
+  createPost(input:
+  {
+    id: "00000000-9e21-42ad-b186-6cd157c4b3d1",
+    title: "Our first post!",
+    blogID: "3b51348c-9e21-42ad-b186-6cd157c4b3d1"
+  })
+  {
+    id
+    title
+    blogID
+  }
+}
+```
+
+```
+mutation createComment {
+  createComment(input:
+  {
+    id: "cc000000-9e21-42ad-b186-6cd157c4b3d1"
+    postID: "00000000-9e21-42ad-b186-6cd157c4b3d1"
+    content: "jsdklfsajfsdjf sdflsdjfjdsjlfjkljdlsjldkfjsdlkfjlj Our first post!"
+  }) {
+    id
+    postID
+    content
+  }
+}
 ```
