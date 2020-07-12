@@ -117,8 +117,35 @@ plugins: [
     'gatsby-transformer-remark'
   ],
 ```
-
 the combination of the two plugins: 'source-filesystem' and 'transformer-remark', can access markdwon file information
+
+4) React Helmet
+Provides drop-in support for server rendering data added with React Helmet.
+React Helmet is a component which lets you control your document head using their React component.
+With this plugin, attributes you add in their component, e.g. title, meta attributes, etc. will get added to the static HTML pages Gatsby builds.
+
+This is important not just for site viewers, but also for SEO — title and description metadata stored in the document head is a key component used by Google in determining placement in search results.
+```
+npm install --save gatsby-plugin-react-helmet react-helmet
+npm install gatsby-source-graphql
+```
+
+at gatsby-config.js
+```
+ plugins: [
+  `gatsby-plugin-react-helmet`,
+  {
+   resolve: `gatsby-source-graphql`,
+   options: { 
+        typeName: `gatsbyappsync`,
+        fieldName: `gatsbyappsync`,
+        url: `https://randomvalue.appsync-api.us-east-1.amazonaws.com/graphql`,
+        headers: {
+            'x-api-key': 'randomkey'
+        }
+   },
+  },
+```
 
 ### Deploy Gatsby
 
@@ -399,10 +426,10 @@ mutation CreateBlog {
 
 ```
 mutation CreatePost {
-  createBlog(input:
+  createPost(input:
   {
     id: "00000000-9e21-42ad-b186-6cd157c4b3d1",
-    title: "action with doers",
+    title: "Our first post!",
     blogID: "3b51348c-9e21-42ad-b186-6cd157c4b3d1"
   })
   {
