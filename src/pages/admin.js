@@ -14,7 +14,16 @@ class Admin extends React.Component {
     this.setState(() => ({ formState }))
   }
   async componentDidMount() {
-    // check and update signed in state
+
+    /*
+      the user state can be persisted by checking to see if the user is signed in when the app loads. 
+      */
+    const user = await Auth.currentAuthenticatedUser()
+    const { signInUserSession: { idToken: { payload }}} = user
+    // if (payload["cognito:groups"] && payload["cognito:groups"].includes("Admin")) {
+    //   this.setState({ formState: 'signedIn', isAdmin: true })
+    // }
+    this.setState({formState: 'signedIn'})
   }
 
   signUp = async (form) => {

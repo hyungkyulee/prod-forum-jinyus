@@ -1,76 +1,29 @@
 import React from 'react'
-import { Link, StaticQuery, graphql } from 'gatsby'
-import styles from './header.module.scss'
-
-// HeaderLink component
-const HeaderLink = props => (
-  <Link className={styles.link} to={props.to}>{props.text}</Link>
-)
-
-// HomeButton component
-const HomeButton = props => (
-  <Link to={props.to}>
-    <div className={styles.button}>{props.text}</div>
-  </Link>
-)
-
-// SocialButton component
-const SocialButton = (props) => {
-
-  let style = '';
-  let url = '';
-
-  if (props.site === 'twitter') {
-    style = styles.buttonTwitter;
-    url = "https://twitter.com/" + props.username;
-  }
-  else if (props.site === 'linkedin') {
-    style = styles.buttonLinkedin;
-    url = "https://www.linkedin.com/in/" + props.username;
-  }
-  else if (props.site === 'github') {
-    style = styles.buttonGithub;
-    url = "https://www.github.com/" + props.username;
-  }
-  
-  return (
-    <a href={url} target="_blank" rel="noopener noreferrer">
-      <div className={style}>{props.children}&nbsp;</div>
-    </a>
-  )
-
-}
+import {Navbar, Nav, NavDropdown, Form, FormControl, Button} from 'react-bootstrap'
 
 export default () => (
 
-  <StaticQuery
-    query = {graphql `
-      query {
-        site {
-          siteMetadata {
-            title
-          }
-        }
-      }`
-    }
-
-    render = { data => (
-      <header className={styles.container}>
-
-        <div className={styles.row}>
-          <HomeButton to='/' text={data.site.siteMetadata.title} />
-          <SocialButton site="github" username="hyungkyulee"></SocialButton>
-          <SocialButton site="linkedin" username="hyungkyulee"></SocialButton>
-          <SocialButton site="twitter" username="HyungkyuLee5"></SocialButton>
-        </div>
-
-        <div className={styles.row}>
-          <HeaderLink to='/' text='ARTICLES' />
-          <HeaderLink to='/about' text='ABOUT'/>
-        </div>
-        
-      </header>
-    )}
-   />
+  <Navbar bg="light" expand="lg">
+    <Navbar.Brand href="#home">Jinyus</Navbar.Brand>
+    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar.Collapse id="basic-navbar-nav">
+      <Nav className="mr-auto">
+        <Nav.Link href="/">Home</Nav.Link>
+        <Nav.Link href="/about">About</Nav.Link>
+        <NavDropdown title="Articles" id="basic-nav-dropdown">
+          <NavDropdown.Item href="/article">Action with doers</NavDropdown.Item>
+          <NavDropdown.Item href="#action/3.2">Story Together</NavDropdown.Item>
+          <NavDropdown.Item href="#action/3.3">News around us</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item href="#action/3.4">What about you</NavDropdown.Item>
+        </NavDropdown>
+        <Nav.Link href="/admin">Signin</Nav.Link>
+      </Nav>
+      <Form inline>
+        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+        <Button variant="outline-success">Search</Button>
+      </Form>
+    </Navbar.Collapse>
+  </Navbar>
 
 )

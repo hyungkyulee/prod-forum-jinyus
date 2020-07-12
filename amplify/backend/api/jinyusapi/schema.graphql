@@ -1,4 +1,7 @@
-type Blog @model {
+type Blog @model @auth(rules: [
+    { allow: public, operations: [read] },
+    { allow: groups, groups: ["Admin"] }
+  ]) {
   id: ID!
   name: String!
   posts: [Post] @connection(keyName: "byBlog", fields: ["id"])

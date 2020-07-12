@@ -19,6 +19,18 @@ module.exports = {
         path: `${__dirname}/src/markdown`,
       }
     },
-    'gatsby-transformer-remark'
+    'gatsby-transformer-remark',
+    `gatsby-plugin-react-helmet`,
+    {
+      resolve: `gatsby-source-graphql`,
+      options: { 
+            typeName: `gatsbyappsync`,
+            fieldName: `gatsbyappsync`,
+            url: `https://jt5yic4tgbbode5z7bd3i274jm.appsync-api.eu-west-1.amazonaws.com/graphql`,
+            headers: {
+                'x-api-key': 'randomkey'
+            }
+      },
+    },
   ],
 }
